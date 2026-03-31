@@ -1,38 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="loader"><div class="neon-text">LOADING</div></div>
-<div class="cursor-glow"></div>
-<canvas id="particles"></canvas>
-<audio id="clickSound" src="click.mp3"></audio>
-
-<header class="glass">
-<h1>My Portfolio</h1>
-<div class="menu-btn" onclick="toggleMenu()">☰</div>
-<nav id="nav">
-<a href="index.html" class="sound">Home</a>
-<a href="projects.html" class="sound">Projects</a>
-<a href="about.html" class="sound">About</a>
-<a href="contact.html" class="sound">Contact</a>
-<a href="inspire.html" class="sound">Lab</a>
-<a href="gaming.html" class="sound">Gaming</a>
-</nav>
-</header>
-
-<section class="hero">
-<div class="hero-content glass fade-up">
-<h2>Full Stack Developer</h2>
-<p>Elite UI / Gaming Interface Builder</p>
-<button class="glow-btn sound">Explore</button>
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>MyPort</h2>
+  <ul>
+    <li onclick="goTo('home')">Home</li>
+    <li onclick="goTo('about')">About</li>
+    <li onclick="goTo('skills')">Skills</li>
+    <li onclick="goTo('projects')">Projects</li>
+    <li onclick="goTo('contact')">Contact</li>
+  </ul>
 </div>
-</section>
+
+<!-- Main Content -->
+<div class="main">
+
+  <section id="home" class="card">
+    <h1>Hi, I'm Tamilanda 👋</h1>
+    <p>Frontend Developer | Student</p>
+    <button onclick="goTo('projects')">View Work</button>
+  </section>
+
+  <section id="about" class="card">
+    <h2>About Me</h2>
+    <p>I am a student learning web development and building cool UI designs.</p>
+  </section>
+
+  <section id="skills" class="card">
+    <h2>Skills</h2>
+    <div class="skills">
+      <span>HTML</span>
+      <span>CSS</span>
+      <span>JavaScript</span>
+    </div>
+  </section>
+
+  <section id="projects" class="card">
+    <h2>Projects</h2>
+    <div class="project">
+      <h3>Portfolio Website</h3>
+      <p>Modern UI with animations</p>
+      <button onclick="alert('Open Project')">Open</button>
+    </div>
+  </section>
+
+  <section id="contact" class="card">
+    <h2>Contact</h2>
+    <p>Email: you@email.com</p>
+  </section>
+
+</div>
 
 <script src="script.js"></script>
 </body>
