@@ -1,4 +1,4 @@
- function showPanel(id) {
+function showPanel(id) {
   const panels = document.querySelectorAll(".panel");
 
   panels.forEach(panel => {
@@ -6,4 +6,4 @@
   });
 
   document.getElementById(id).classList.add("active");
-}
+} 
