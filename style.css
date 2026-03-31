@@ -70,11 +70,36 @@ body {
 }
 
 /* Button */
-button {
+.button {
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
   background: cyan;
   cursor: pointer;
   font-weight: bold;
+}
+
+
+.panel {
+  position: absolute;
+  top: 50%;
+  left: 55%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 70%;
+  padding: 30px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 30px rgba(0,255,255,0.2);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.4s ease;
+}
+
+/* Active panel shows */
+.panel.active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
 }
