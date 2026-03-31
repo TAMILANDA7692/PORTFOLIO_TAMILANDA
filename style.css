@@ -143,4 +143,12 @@ body {
 .fade-up.show {
     opacity: 1;
     transform: translateY(0);
+.clickable-card {
+    display: inline-block;
+    padding: 30px;
+    margin: 20px;
+    width: 250px;
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
 }
