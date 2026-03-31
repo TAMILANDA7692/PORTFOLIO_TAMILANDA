@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Portfolio</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>My Portfolio</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <!-- Sidebar -->
 <div class="sidebar">
   <h2>MyPort</h2>
   <ul>
-    <li onclick="goTo('home')">Home</li>
-    <li onclick="goTo('about')">About</li>
-    <li onclick="goTo('skills')">Skills</li>
-    <li onclick="goTo('projects')">Projects</li>
-    <li onclick="goTo('contact')">Contact</li>
+    <li onclick="showPanel('home')">Home</li>
+    <li onclick="showPanel('about')">About</li>
+    <li onclick="showPanel('skills')">Skills</li>
+    <li onclick="showPanel('projects')">Projects</li>
+    <li onclick="showPanel('contact')">Contact</li>
   </ul>
 </div>
 
-<!-- Main Content -->
+<!-- Main -->
 <div class="main">
 
   <div id="home" class="panel active">
@@ -30,7 +31,7 @@
 
   <div id="about" class="panel">
     <h2>About Me</h2>
-    <p>I am a student learning web development.</p>
+    <p>I am a student learning web development and building cool UI designs.</p>
   </div>
 
   <div id="skills" class="panel">
@@ -43,6 +44,7 @@
   <div id="projects" class="panel">
     <h2>Projects</h2>
     <p>Portfolio Website</p>
+    <button onclick="alert('Project Opening...')">Open</button>
   </div>
 
   <div id="contact" class="panel">
@@ -51,3 +53,7 @@
   </div>
 
 </div>
+
+<script src="script.js"></script>
+</body>
+</html>
