@@ -8,6 +8,9 @@
 
 <body>
 
+<!-- 🌌 Particles Background -->
+<canvas id="particles"></canvas>
+
 <!-- Sidebar -->
 <div class="sidebar">
   <h2>MyPort</h2>
@@ -23,17 +26,20 @@
 <!-- Main -->
 <div class="main">
 
+  <!-- Home -->
   <div id="home" class="panel active">
     <h1>Hi, I'm Tamilanda 👋</h1>
     <p>Frontend Developer | Student</p>
-    <button>View Work</button>
+    <button onclick="showPanel('projects')">View Work</button>
   </div>
 
+  <!-- About -->
   <div id="about" class="panel">
     <h2>About Me</h2>
     <p>I am a student learning web development and building cool UI designs.</p>
   </div>
 
+  <!-- Skills -->
   <div id="skills" class="panel">
     <h2>Skills</h2>
     <span>HTML</span>
@@ -41,12 +47,14 @@
     <span>JavaScript</span>
   </div>
 
+  <!-- Projects -->
   <div id="projects" class="panel">
     <h2>Projects</h2>
     <p>Portfolio Website</p>
     <button onclick="alert('Project Opening...')">Open</button>
   </div>
 
+  <!-- Contact -->
   <div id="contact" class="panel">
     <h2>Contact</h2>
     <p>Email: you@email.com</p>
@@ -54,6 +62,8 @@
 
 </div>
 
+<!-- Script -->
 <script src="script.js"></script>
+
 </body>
 </html>
