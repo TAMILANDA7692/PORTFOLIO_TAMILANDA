@@ -1,32 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<title>My Portfolio</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div id="moon"></div>
-    <div class="sidebar">
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div class="panels">
-        <section id="home" class="panel">Welcome to my portfolio!</section>
-        <section id="about" class="panel">About me content goes here.</section>
-        <section id="skills" class="panel">Skills content goes here.</section>
-        <section id="projects" class="panel">Projects content goes here.</section>
-        <section id="contact" class="panel">Contact information goes here.</section>
-    </div>
-    <canvas id="particles-canvas"></canvas>
-    <script src="particles.js"></script>
+
+<!-- 🌌 Particles Background -->
+<canvas id="particles"></canvas>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>MyPort</h2>
+  <ul>
+    <li onclick="showPanel('home')">Home</li>
+    <li onclick="showPanel('about')">About</li>
+    <li onclick="showPanel('skills')">Skills</li>
+    <li onclick="showPanel('projects')">Projects</li>
+    <li onclick="showPanel('contact')">Contact</li>
+  </ul>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Home -->
+  <div id="home" class="panel active">
+    <h1>Hi, I'm Parivallal 👋</h1>
+    <p> Developer | Student</p>
+    <button onclick="showPanel('projects')">View Work</button>
+  </div>
+
+  <!-- About -->
+  <div id="about" class="panel">
+    <h2>About Me</h2>
+    <p>I am a student learning web development and building UI designs.</p>
+  </div>
+
+  <!-- Skills -->
+  <div id="skills" class="panel">
+    <h2>Skills</h2>
+    <span>Python</span>
+    <span>C++</span>
+    <span>JavaScript</span>
+  </div>
+
+  <!-- Projects -->
+  <div id="projects" class="panel">
+    <h2>Projects - Under dev..ment</h2>
+    <p>Portfolio Website</p>
+    <button onclick="alert('Project Opening...')">Open</button>
+  </div>
+
+  <!-- Contact -->
+  <div id="contact" class="panel">
+    <h2>Contact</h2>
+    <p>Email: tamilandax@gmail.com</p>
+    <p>Insta: pari7.sync</p>
+  </div>
+
+</div>
+
+<!-- Script -->
+<script src="script.js"></script>
+
 </body>
 </html>
