@@ -1,70 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>My Portfolio</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Portfolio</title>
 </head>
-
 <body>
-
-<!-- 🌌 Particles Background -->
-<canvas id="particles"></canvas>
-
-<!-- Sidebar -->
-<div class="sidebar">
-  <h2>MyPort</h2>
-  <ul>
-    <li onclick="showPanel('home')">Home</li>
-    <li onclick="showPanel('about')">About</li>
-    <li onclick="showPanel('skills')">Skills</li>
-    <li onclick="showPanel('projects')">Projects</li>
-    <li onclick="showPanel('contact')">Contact</li>
-  </ul>
-</div>
-
-<!-- Main -->
-<div class="main">
-
-  <!-- Home -->
-  <div id="home" class="panel active">
-    <h1>Hi, I'm Parivallal 👋</h1>
-    <p> Developer | Student</p>
-    <button onclick="showPanel('projects')">View Work</button>
-  </div>
-
-  <!-- About -->
-  <div id="about" class="panel">
-    <h2>About Me</h2>
-    <p>I am a student learning web development and building UI designs.</p>
-  </div>
-
-  <!-- Skills -->
-  <div id="skills" class="panel">
-    <h2>Skills</h2>
-    <span>Python</span>
-    <span>C++</span>
-    <span>JavaScript</span>
-  </div>
-
-  <!-- Projects -->
-  <div id="projects" class="panel">
-    <h2>Projects - Under dev..ment</h2>
-    <p>Portfolio Website</p>
-    <button onclick="alert('Project Opening...')">Open</button>
-  </div>
-
-  <!-- Contact -->
-  <div id="contact" class="panel">
-    <h2>Contact</h2>
-    <p>Email: tamilandax@gmail.com</p>
-    <p>Insta: pari7.sync</p>
-  </div>
-
-</div>
-
-<!-- Script -->
-<script src="script.js"></script>
-
+    <canvas></canvas>
+    <!-- 🌙 Moon -->
+    <div class="moon"></div>
+    <aside class="sidebar">
+        <h2>Sidebar</h2>
+        <!-- Sidebar content goes here -->
+    </aside>
 </body>
 </html>
