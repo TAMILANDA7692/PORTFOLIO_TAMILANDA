@@ -1,23 +1,44 @@
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  background: linear-gradient(135deg, #1a0033, #330066, #4d0099);
   color: white;
   overflow: hidden;
+}
+
+/* 🌙 MOON - Top Right */
+.moon {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 80px;
+  height: 80px;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0);
+  border-radius: 50%;
+  box-shadow: 
+    0 0 40px rgba(200, 150, 255, 0.8),
+    0 0 80px rgba(150, 100, 255, 0.5),
+    inset -20px -20px 40px rgba(0, 0, 0, 0.2);
+  z-index: 10;
 }
 
 /* Sidebar */
 .sidebar {
   width: 220px;
   height: 100vh;
-  background: rgba(255,255,255,0.05);
+  background: rgba(138, 43, 226, 0.15);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   padding: 20px;
+  border-right: 1px solid rgba(200, 100, 255, 0.3);
 }
 
 .sidebar h2 {
   text-align: center;
+  color: #e0b0ff;
+  font-size: 1.5em;
+  margin-bottom: 30px;
 }
 
 .sidebar ul {
@@ -26,15 +47,18 @@ body {
 }
 
 .sidebar li {
-  padding: 12px;
+  padding: 12px 15px;
   margin: 10px 0;
   cursor: pointer;
   border-radius: 10px;
-  transition: 0.3s;
+  transition: 0.3s ease;
+  border-left: 3px solid transparent;
 }
 
 .sidebar li:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(147, 51, 234, 0.3);
+  border-left-color: #c77dff;
+  color: #e0b0ff;
 }
 
 /* Main */
@@ -43,23 +67,23 @@ body {
   position: relative;
 }
 
-/* 🔥 PANEL (GLASS + MOVING GLOW) */
+/* 🔥 PANEL (GLASS MORPHISM + PURPLE GLOW) */
 .panel {
   position: absolute;
   top: 50%;
   left: 55%;
   transform: translate(-50%, -50%) scale(0.8);
   width: 70%;
-  padding: 30px;
+  padding: 40px;
   border-radius: 20px;
 
-  /* Glass blur */
-  background: rgba(255,255,255,0.08);
+  /* Glass blur effect */
+  background: rgba(75, 0, 130, 0.15);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
 
-  /* Glow base */
-  border: 1px solid rgba(255,255,255,0.1);
+  /* Border */
+  border: 1px solid rgba(200, 100, 255, 0.4);
 
   opacity: 0;
   pointer-events: none;
@@ -67,7 +91,7 @@ body {
   z-index: 1;
 }
 
-/* ✨ Moving Glow Border */
+/* ✨ Purple Moving Glow Border */
 .panel::before {
   content: "";
   position: absolute;
@@ -75,14 +99,15 @@ body {
   border-radius: 20px;
   background: linear-gradient(
     90deg,
-    #00f0ff,
-    #7a00ff,
-    #00f0ff
+    #b300ff,
+    #e0b0ff,
+    #b300ff
   );
   background-size: 300% 300%;
   z-index: -1;
-  filter: blur(12px);
-  animation: borderMove 6s linear infinite;
+  filter: blur(15px);
+  animation: purpleGlow 6s linear infinite;
+  opacity: 0.6;
 }
 
 /* Inner dark glass layer */
@@ -91,7 +116,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 20px;
-  background: rgba(15,15,25,0.6);
+  background: rgba(20, 10, 40, 0.5);
   z-index: -1;
 }
 
@@ -102,34 +127,57 @@ body {
   pointer-events: auto;
 }
 
-/* Glow animation */
-@keyframes borderMove {
+/* Purple Glow animation */
+@keyframes purpleGlow {
   0% { background-position: 0% 50%; }
   100% { background-position: 300% 50%; }
 }
 
-/* Skills */
-.panel span {
-  background: cyan;
-  color: black;
-  padding: 8px 15px;
-  margin: 5px;
-  display: inline-block;
-  border-radius: 20px;
+/* Panel heading */
+.panel h1, .panel h2 {
+  color: #e0b0ff;
+  margin-bottom: 20px;
+  font-size: 2.2em;
 }
 
-/* 🔥 BUTTON GLOW */
+.panel p {
+  color: #d0a0ff;
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+/* Skills */
+.panel span {
+  background: linear-gradient(135deg, #7a00ff, #b300ff);
+  color: white;
+  padding: 10px 20px;
+  margin: 8px;
+  display: inline-block;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(179, 0, 255, 0.4);
+  transition: 0.3s ease;
+}
+
+.panel span:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(179, 0, 255, 0.6);
+}
+
+/* 🔥 BUTTON - PURPLE GLOW */
 button {
-  padding: 12px 25px;
+  padding: 12px 30px;
   border: none;
   border-radius: 25px;
   cursor: pointer;
   font-weight: bold;
   color: white;
-  background: linear-gradient(45deg, #00f0ff, #7a00ff);
+  background: linear-gradient(45deg, #7a00ff, #b300ff);
   position: relative;
   z-index: 1;
   overflow: hidden;
+  font-size: 1em;
+  transition: 0.3s ease;
+  margin-top: 15px;
 }
 
 button::before {
@@ -137,29 +185,35 @@ button::before {
   position: absolute;
   inset: -2px;
   border-radius: 25px;
-  background: linear-gradient(45deg, #00f0ff, #7a00ff, #00f0ff);
+  background: linear-gradient(45deg, #b300ff, #e0b0ff, #b300ff);
   z-index: -1;
-  filter: blur(10px);
-  animation: glowMove 3s linear infinite;
+  filter: blur(12px);
+  animation: buttonGlow 3s linear infinite;
 }
 
 button::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 25px;
   z-index: -1;
 }
 
-@keyframes glowMove {
-  0% { filter: blur(10px) hue-rotate(0deg); }
-  100% { filter: blur(10px) hue-rotate(360deg); }
+@keyframes buttonGlow {
+  0% { filter: blur(12px) hue-rotate(0deg); }
+  100% { filter: blur(12px) hue-rotate(360deg); }
 }
 
 button:hover {
-  transform: scale(1.05);
+  transform: scale(1.08);
+  box-shadow: 0 8px 25px rgba(179, 0, 255, 0.6);
 }
+
+button:active {
+  transform: scale(0.95);
+}
+
 /* Particle canvas */
 #particles {
   position: fixed;
@@ -173,5 +227,5 @@ button:hover {
 /* Keep content above particles */
 .sidebar, .main {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
