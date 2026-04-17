@@ -3,15 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Portfolio</title>
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <canvas></canvas>
-    <!-- 🌙 Moon -->
-    <div class="moon"></div>
-    <aside class="sidebar">
-        <h2>Sidebar</h2>
-        <!-- Sidebar content goes here -->
-    </aside>
+    <div id="moon"></div>
+    <div class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="panels">
+        <section id="home" class="panel">Welcome to my portfolio!</section>
+        <section id="about" class="panel">About me content goes here.</section>
+        <section id="skills" class="panel">Skills content goes here.</section>
+        <section id="projects" class="panel">Projects content goes here.</section>
+        <section id="contact" class="panel">Contact information goes here.</section>
+    </div>
+    <canvas id="particles-canvas"></canvas>
+    <script src="particles.js"></script>
 </body>
 </html>
