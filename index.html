@@ -368,3 +368,120 @@ function pieceXY(pc){
 }
 
 /* ---- DRAW ---- */
+function drawBoard(){
+  LX.clearRect(0,0,SZ,SZ);
+  // Background
+  LX.fillStyle='#0d0c0a'; LX.fillRect(0,0,SZ,SZ);
+  // Grid lines
+  LX.strokeStyle='rgba(46,42,30,0.5)'; LX.lineWidth=0.5;
+  for(let i=0;i<=15;i++){
+    LX.beginPath();LX.moveTo(i*CELL,0);LX.lineTo(i*CELL,SZ);LX.stroke();
+    LX.beginPath();LX.moveTo(0,i*CELL);LX.lineTo(SZ,i*CELL);LX.stroke();
+  }
+  // Track cells
+  TRACK.forEach(([c,r])=>{
+    LX.fillStyle='rgba(240,220,180,0.05)';
+    LX.fillRect(c*CELL+.5,r*CELL+.5,CELL-1,CELL-1);
+  });
+  // Yards
+  drawYard(0,0,6,6,'#c0392b','#7b241c');
+  drawYard(9,0,6,6,'#1a4a8a','#154360');
+  drawYard(9,9,6,6,'#1a6a3a','#145a32');
+  drawYard(0,9,6,6,'#6a500a','#3d2f06');
+  // Home lanes
+  [[1,7,5,7,2],[7,1,7,5,3],[9,7,13,7,4],[7,9,7,13,5]].forEach(([c1,r1,c2,r2,p])=>{
+    const colors=['','#c0392b','#1a4a8a','#1a6a3a','#8a6a1a'];
+    const lts=['','#e74c3c','#2980b9','#27ae60','#d4a843'];
+    for(let c=Math.min(c1,c2);c<=Math.max(c1,c2);c++){
+      for(let r=Math.min(r1,r2);r<=Math.max(r1,r2);r++){
+        LX.fillStyle=colors[p]+'55'; LX.fillRect(c*CELL+.5,r*CELL+.5,CELL-1,CELL-1);
+        const g=LX.createLinearGradient(c*CELL,r*CELL,c*CELL+CELL,r*CELL+CELL);
+        g.addColorStop(0,lts[p]+'22'); g.addColorStop(1,'transparent');
+        LX.fillStyle=g; LX.fillRect(c*CELL+.5,r*CELL+.5,CELL-1,CELL-1);
+      }
+    }
+  });
+  // Center
+  drawCenter();
+  // Safe stars
+  [[6,2],[2,6],[6,12],[12,6],[2,8],[8,2],[12,8],[8,12]].forEach(([c,r])=>{
+    LX.fillStyle='rgba(212,168,67,0.25)'; LX.font=`${CELL*.45}px serif`;
+    LX.textAlign='center'; LX.textBaseline='middle';
+    LX.fillText('✦',c*CELL+CELL/2,r*CELL+CELL/2);
+  });
+  // Pieces
+  G.pieces.forEach(pc=>drawPiece(pc));
+  // Outer gold border
+  LX.strokeStyle='rgba(212,168,67,0.12)'; LX.lineWidth=1.5;
+  LX.strokeRect(1,1,SZ-2,SZ-2);
+}
+
+function drawYard(sc,sr,w,h,col,dark){
+  const x=sc*CELL,y=sr*CELL,pw=w*CELL,ph=h*CELL;
+  const g=LX.createLinearGradient(x,y,x+pw,y+ph);
+  g.addColorStop(0,dark+'cc'); g.addColorStop(1,col+'44');
+  LX.fillStyle=g; LX.fillRect(x,y,pw,ph);
+  LX.strokeStyle=col+'66'; LX.lineWidth=1.5;
+  LX.strokeRect(x+1,y+1,pw-2,ph-2);
+  // Inner circle
+  const cx=x+pw/2,cy=y+ph/2;
+  LX.beginPath(); LX.arc(cx,cy,pw*.33,0,Math.PI*2);
+  LX.fillStyle='rgba(0,0,0,0.35)'; LX.fill();
+  LX.strokeStyle=col+'33'; LX.lineWidth=1; LX.stroke();
+}
+
+function drawCenter(){
+  const cx=7.5*CELL,cy=7.5*CELL;
+  const tris=[
+    {pts:[[6,6],[9,6],[7.5,7.5]],c:'#c0392bcc'},
+    {pts:[[9,6],[9,9],[7.5,7.5]],c:'#1a4a8acc'},
+    {pts:[[9,9],[6,9],[7.5,7.5]],c:'#1a6a3acc'},
+    {pts:[[6,9],[6,6],[7.5,7.5]],c:'#8a6a1acc'},
+  ];
+  tris.forEach(t=>{
+    LX.beginPath();
+    LX.moveTo(t.pts[0][0]*CELL,t.pts[0][1]*CELL);
+    LX.lineTo(t.pts[1][0]*CELL,t.pts[1][1]*CELL);
+    LX.lineTo(t.pts[2][0]*CELL,t.pts[2][1]*CELL);
+    LX.closePath(); LX.fillStyle=t.c; LX.fill();
+    LX.strokeStyle='rgba(212,168,67,0.15)'; LX.lineWidth=.5; LX.stroke();
+  });
+  const rg=LX.createRadialGradient(cx,cy,0,cx,cy,CELL*.7);
+  rg.addColorStop(0,'#d4a84355'); rg.addColorStop(1,'transparent');
+  LX.fillStyle=rg; LX.beginPath(); LX.arc(cx,cy,CELL*.7,0,Math.PI*2); LX.fill();
+  LX.fillStyle='rgba(212,168,67,0.5)'; LX.font=`${CELL*.85}px serif`;
+  LX.textAlign='center'; LX.textBaseline='middle';
+  LX.fillText('♛',cx,cy);
+}
+
+function drawPiece(pc){
+  if(pc.fin)return;
+  const{px,py}=pieceXY(pc);
+  const pl=PLAYERS[pc.pi];
+  const r=CELL*.37;
+  const movable=G.movable.includes(pc);
+  if(movable){
+    LX.save(); LX.shadowColor=pl.light; LX.shadowBlur=18;
+    LX.beginPath(); LX.arc(px,py,r+4,0,Math.PI*2);
+    LX.fillStyle=pl.light+'33'; LX.fill(); LX.restore();
+  }
+  LX.save();
+  LX.shadowColor='rgba(0,0,0,0.6)'; LX.shadowBlur=8; LX.shadowOffsetY=3;
+  const grd=LX.createRadialGradient(px-r*.3,py-r*.3,r*.08,px,py,r);
+  grd.addColorStop(0,pl.light); grd.addColorStop(.5,pl.color); grd.addColorStop(1,pl.dark);
+  LX.beginPath(); LX.arc(px,py,r,0,Math.PI*2);
+  LX.fillStyle=grd; LX.fill(); LX.restore();
+  LX.beginPath(); LX.arc(px,py,r,0,Math.PI*2);
+  LX.strokeStyle=movable?'#d4a843':'rgba(212,168,67,0.3)';
+  LX.lineWidth=movable?2:1; LX.stroke();
+  LX.fillStyle='rgba(255,255,255,0.9)';
+  LX.font=`bold ${CELL*.28}px 'Space Mono',monospace`;
+  LX.textAlign='center'; LX.textBaseline='middle';
+  LX.fillText(pc.id+1,px,py);
+}
+
+// Kick off
+initLudo();
+</script>
+</body>
+</html>
