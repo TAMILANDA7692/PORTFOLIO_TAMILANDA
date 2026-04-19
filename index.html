@@ -1,739 +1,370 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parivallal — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --border: #1e1e2e;
-    --accent: #00f5c4;
-    --accent2: #7c3aff;
-    --accent3: #ff3a6e;
-    --text: #e8e8f0;
-    --muted: #6b6b8a;
-    --glow: 0 0 20px rgba(0,245,196,0.3);
-  }
-
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    overflow-x: hidden;
-  }
-
-  /* Noise overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.4;
-  }
-
-  /* Canvas */
-  #particles {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* Layout */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0;
-    width: 220px;
-    height: 100vh;
-    background: rgba(18,18,26,0.85);
-    backdrop-filter: blur(20px);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 40px 28px;
-    z-index: 100;
-  }
-
-  .logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 60px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .logo-dot {
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.6); }
-  }
-
-  nav ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
-  nav ul li {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 12px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    position: relative;
-    overflow: hidden;
-  }
-  nav ul li::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0;
-    width: 3px;
-    height: 100%;
-    background: var(--accent);
-    transform: scaleY(0);
-    transition: transform 0.25s;
-    border-radius: 0 2px 2px 0;
-  }
-  nav ul li:hover, nav ul li.active {
-    color: var(--text);
-    background: rgba(0,245,196,0.06);
-  }
-  nav ul li:hover::before, nav ul li.active::before {
-    transform: scaleY(1);
-  }
-  nav ul li .nav-icon { font-size: 16px; }
-
-  .sidebar-footer {
-    margin-top: auto;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  /* Main Content */
-  .main {
-    margin-left: 220px;
-    min-height: 100vh;
-    position: relative;
-    z-index: 2;
-  }
-
-  .panel {
-    display: none;
-    min-height: 100vh;
-    padding: 80px 70px;
-    animation: fadeIn 0.5s ease;
-  }
-  .panel.active { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* HOME */
-  #home {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-top: 120px;
-  }
-  .home-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .home-tag::before {
-    content: '';
-    width: 40px;
-    height: 1px;
-    background: var(--accent);
-  }
-  h1.hero-name {
-    font-size: clamp(52px, 8vw, 96px);
-    font-weight: 800;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    margin-bottom: 24px;
-  }
-  h1.hero-name span {
-    display: block;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .hero-sub {
-    font-size: 18px;
-    color: var(--muted);
-    margin-bottom: 48px;
-    max-width: 480px;
-    line-height: 1.7;
-  }
-  .hero-sub strong { color: var(--text); }
-
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .btn {
-    padding: 14px 32px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.25s;
-    position: relative;
-    overflow: hidden;
-  }
-  .btn-primary {
-    background: var(--accent);
-    color: #0a0a0f;
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glow);
-  }
-  .btn-outline {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-outline:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: translateY(-2px);
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    margin-top: 80px;
-    padding-top: 40px;
-    border-top: 1px solid var(--border);
-  }
-  .stat-num {
-    font-size: 36px;
-    font-weight: 800;
-    color: var(--accent);
-    font-family: 'Space Mono', monospace;
-  }
-  .stat-label {
-    font-size: 12px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-top: 4px;
-  }
-
-  /* SECTION HEADERS */
-  .section-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    margin-bottom: 48px;
-    line-height: 1.1;
-  }
-
-  /* ABOUT */
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-    align-items: start;
-  }
-  .about-text p {
-    color: var(--muted);
-    line-height: 1.9;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  .about-text p strong { color: var(--text); }
-
-  .about-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    position: relative;
-    overflow: hidden;
-  }
-  .about-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-  .about-card h3 {
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
-  .info-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .info-item:last-child { border-bottom: none; }
-  .info-label { color: var(--muted); }
-  .info-value { color: var(--text); font-weight: 600; }
-
-  /* SKILLS */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-  }
-  .skill-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    transition: all 0.3s;
-    cursor: default;
-    position: relative;
-    overflow: hidden;
-  }
-  .skill-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(0,245,196,0.04), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .skill-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(0,245,196,0.1);
-  }
-  .skill-card:hover::after { opacity: 1; }
-
-  .skill-icon { font-size: 28px; margin-bottom: 12px; }
-  .skill-name {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-  .skill-level {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 14px;
-  }
-  .skill-bar {
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .skill-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    border-radius: 2px;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 1s cubic-bezier(0.4,0,0.2,1);
-  }
-  .skill-card.visible .skill-bar-fill { transform: scaleX(1); }
-
-  /* PROJECTS */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 24px;
-  }
-  .project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 32px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  .project-card::before {
-    content: '';
-    position: absolute;
-    top: -100%; left: -100%;
-    width: 300%; height: 300%;
-    background: radial-gradient(circle, rgba(0,245,196,0.06) 0%, transparent 60%);
-    transition: all 0.5s;
-    pointer-events: none;
-  }
-  .project-card:hover::before {
-    top: -50%; left: -50%;
-  }
-  .project-card:hover {
-    border-color: rgba(0,245,196,0.4);
-    transform: translateY(-6px);
-    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
-  }
-  .project-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 20px;
-  }
-  .project-title {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-  .project-desc {
-    font-size: 14px;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 24px;
-  }
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-  .tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: rgba(0,245,196,0.08);
-    color: var(--accent);
-    border: 1px solid rgba(0,245,196,0.2);
-    letter-spacing: 0.05em;
-  }
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: gap 0.2s;
-  }
-  .project-link:hover { gap: 10px; }
-
-  .wip-badge {
-    display: inline-block;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    background: rgba(255,58,110,0.1);
-    color: var(--accent3);
-    border: 1px solid rgba(255,58,110,0.3);
-    letter-spacing: 0.08em;
-    margin-left: 8px;
-  }
-
-  /* CONTACT */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
-  }
-  .contact-info { display: flex; flex-direction: column; gap: 20px; }
-  .contact-item {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    transition: all 0.3s;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-  }
-  .contact-item:hover {
-    border-color: var(--accent);
-    transform: translateX(6px);
-  }
-  .contact-icon {
-    font-size: 24px;
-    width: 48px; height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,245,196,0.08);
-    border-radius: 10px;
-    flex-shrink: 0;
-  }
-  .contact-label {
-    font-size: 11px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 4px;
-  }
-  .contact-value { font-size: 15px; font-weight: 600; }
-
-  .contact-form {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 36px;
-    position: relative;
-    overflow: hidden;
-  }
-  .contact-form::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent2), var(--accent));
-  }
-  .form-group { margin-bottom: 20px; }
-  .form-label {
-    display: block;
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    margin-bottom: 8px;
-  }
-  .form-input, .form-textarea {
-    width: 100%;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    color: var(--text);
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-input:focus, .form-textarea:focus {
-    border-color: var(--accent);
-  }
-  .form-textarea { resize: vertical; min-height: 100px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    background: var(--surface);
-    border: 1px solid var(--accent);
-    border-radius: 10px;
-    padding: 16px 24px;
-    font-size: 14px;
-    color: var(--accent);
-    z-index: 9999;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--glow);
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
-  /* Mobile */
-  @media (max-width: 768px) {
-    .sidebar { width: 100%; height: auto; flex-direction: row; flex-wrap: wrap; padding: 16px 20px; border-right: none; border-bottom: 1px solid var(--border); position: sticky; top: 0; }
-    .logo { margin-bottom: 0; margin-right: 24px; }
-    nav ul { flex-direction: row; gap: 4px; }
-    nav ul li { padding: 8px 12px; font-size: 11px; }
-    nav ul li::before { display: none; }
-    .main { margin-left: 0; }
-    .panel { padding: 40px 24px; }
-    .about-grid, .contact-grid { grid-template-columns: 1fr; }
-    .hero-stats { gap: 24px; }
-    .sidebar-footer { display: none; }
-  }
-</style>
-</head>
-<body>
-
-<canvas id="particles"></canvas>
-<div class="toast" id="toast"></div>
-
-<!-- Sidebar -->
-<div class="sidebar">
-  <div class="logo">
-    <div class="logo-dot"></div>
-    PARI.DEV
-  </div>
-  <nav>
-    <ul>
-      <li class="active" data-panel="home" onclick="showPanel('home')"><span class="nav-icon">⌂</span> Home</li>
-      <li data-panel="about" onclick="showPanel('about')"><span class="nav-icon">◎</span> About</li>
-      <li data-panel="skills" onclick="showPanel('skills')"><span class="nav-icon">◈</span> Skills</li>
-      <li data-panel="projects" onclick="showPanel('projects')"><span class="nav-icon">◻</span> Projects</li>
-      <li data-panel="contact" onclick="showPanel('contact')"><span class="nav-icon">◉</span> Contact</li>
-    </ul>
-  </nav>
-  <div class="sidebar-footer">
-    &copy; 2026 Parivallal<br>
-    <span style="color: var(--accent)">Available for work</span>
-  </div>
-</div>
-
-<!-- Main -->
-<div class="main">
-
-  <!-- HOME -->
-  <div id="home" class="panel active">
-    <div class="home-tag">Available for opportunities</div>
-    <h1 class="hero-name">
-      Hi, I'm<br>
-      <span>Parivallal</span>
-    </h1>
-    <p class="hero-sub">
-      <strong>Developer & Designer</strong> crafting digital experiences with code.<br>
-      Currently studying and building things I find interesting.
-    </p>
-    <div class="hero-buttons">
-      <button class="btn btn-primary" onclick="showPanel('projects')">View My Work →</button>
-      <button class="btn btn-outline" onclick="showPanel('contact')">Get In Touch</button>
-    </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <div class="stat-num" id="count1">0</div>
-        <div class="stat-label">Projects Built</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="count2">0</div>
-        <div class="stat-label">Technologies</div>
-      </div>
-      <div class="stat">
-        <div class="stat-num" id="count3">0</div>
-        <div class="stat-label">Cups of Coffee</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ABOUT -->
-  <div id="about" class="panel">
-    <div class="section-tag">Who am I</div>
-    <h2 class="section-title">About Me</h2>
-    <div class="about-grid">
-      <div class="about-text">
-        <p>I'm <strong>Parivallal</strong>, a passionate developer and student who loves building things for the web. I'm always experimenting with new technologies and pushing my creative limits.</p>
+experimenting with new technologies and pushing my creative limits.</p>
         <p>My journey started with curiosity — I wanted to understand how websites work, and that curiosity turned into a full obsession with crafting beautiful, functional interfaces.</p>
         <p>When I'm not coding, I'm probably exploring new design trends, working on side projects, or finding inspiration from things around me.</p>
-        <p style="color: var(--accent); font-weight: 600; font-size: 14px; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 32px;">→ Currently open to freelance & collaboration</p>
+        <p style="color:var(--accent);font-weight:600;font-size:14px;letter-spacing:0.05em;text-transform:uppercase;margin-top:32px;">→ Currently open to freelance & collaboration</p>
       </div>
       <div>
         <div class="about-card">
           <h3>Quick Info</h3>
-          <div class="info-item">
-            <span class="info-label">Name</span>
-            <span class="info-value">Parivallal</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Role</span>
-            <span class="info-value">Developer & Student</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Email</span>
-            <span class="info-value">tamilandax@gmail.com</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Instagram</span>
-            <span class="info-value">@pari7.sync</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Status</span>
-            <span class="info-value" style="color: var(--accent)">● Available</span>
-          </div>
+          <div class="info-item"><span class="info-label">Name</span><span class="info-value">Parivallal</span></div>
+          <div class="info-item"><span class="info-label">Role</span><span class="info-value">Developer & Student</span></div>
+          <div class="info-item"><span class="info-label">Email</span><span class="info-value">tamilandax@gmail.com</span></div>
+          <div class="info-item"><span class="info-label">Instagram</span><span class="info-value">@pari7.sync</span></div>
+          <div class="info-item"><span class="info-label">Status</span><span class="info-value" style="color:var(--accent)">● Available</span></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SKILLS -->
   <div id="skills" class="panel">
     <div class="section-tag">What I Know</div>
     <h2 class="section-title">Skills & Tools</h2>
-    <div class="skills-grid" id="skills-grid">
-      <div class="skill-card">
-        <div class="skill-icon">🐍</div>
-        <div class="skill-name">Python</div>
-        <div class="skill-level">Intermediate</div>
-        <div class="skill-bar"><div class="skill-bar-fill" style="width: 70%"></div></div>
+    <div class="skills-grid">
+      <div class="skill-card"><div class="skill-icon">🐍</div><div class="skill-name">Python</div><div class="skill-level">Intermediate</div><div class="skill-bar"><div class="skill-bar-fill"></div></div></div>
+      <div class="skill-card"><div class="skill-icon">⚡</div><div class="skill-name">C++</div><div class="skill-level">Beginner — Growing</div><div class="skill-bar"><div class="skill-bar-fill" style="width:45%"></div></div></div>
+      <div class="skill-card"><div class="skill-icon">🌐</div><div class="skill-name">JavaScript</div><div class="skill-level">Intermediate</div><div class="skill-bar"><div class="skill-bar-fill" style="width:60%"></div></div></div>
+      <div class="skill-card"><div class="skill-icon">🎨</div><div class="skill-name">HTML & CSS</div><div class="skill-level">Comfortable</div><div class="skill-bar"><div class="skill-bar-fill" style="width:75%"></div></div></div>
+      <div class="skill-card"><div class="skill-icon">🖌️</div><div class="skill-name">UI Design</div><div class="skill-level">Learning</div><div class="skill-bar"><div class="skill-bar-fill" style="width:50%"></div></div></div>
+      <div class="skill-card"><div class="skill-icon">🔧</div><div class="skill-name">Git & GitHub</div><div class="skill-level">Beginner</div><div class="skill-bar"><div class="skill-bar-fill" style="width:40%"></div></div></div>
+    </div>
+  </div>
+
+  <div id="projects" class="panel">
+    <div class="section-tag">What I've Built</div>
+    <h2 class="section-title">Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card" onclick="showToast('Opening project...')">
+        <div class="project-num">01 / FEATURED</div>
+        <div class="project-title">Portfolio Website <span class="wip-badge">LIVE</span></div>
+        <div class="project-desc">This very site — a custom-built portfolio showcasing my work, built from scratch with HTML, CSS, and JavaScript.</div>
+        <div class="project-tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div>
+        <a class="project-link" href="#">View Project →</a>
       </div>
-      <div class="skill-card">
-        <div class="skill-icon">⚡</div>
-        <div class="skill-name">C++</div>
-        <div class="skill-level">Beginner — Growing</div>
-        <div class="skill-bar"><div class="skill-bar-fill" style="width: 45%"></div></div>
+      <div class="project-card" onclick="showToast('More projects coming soon!')">
+        <div class="project-num">02 / IN PROGRESS</div>
+        <div class="project-title">Next Project <span class="wip-badge">WIP</span></div>
+        <div class="project-desc">Something exciting is being built. Details coming soon — stay tuned for updates.</div>
+        <div class="project-tags"><span class="tag">Python</span><span class="tag">Web</span></div>
+        <a class="project-link" href="#">Coming Soon →</a>
       </div>
-      <div class="skill-card">
-        <div class="skill-icon">🌐</div>
-        <div class="skill-name">JavaScript</div>
-        <div class="skill-level">Intermediate</div>
-        <div class="skill-bar"><div class="skill-bar-fill" style="width: 60%"></div></div>
+      <div class="project-card" onclick="showToast('Idea stage!')">
+        <div class="project-num">03 / CONCEPT</div>
+        <div class="project-title">Future Build <span class="wip-badge">IDEA</span></div>
+        <div class="project-desc">An idea taking shape. Every great project starts somewhere. This one is being planned.</div>
+        <div class="project-tags"><span class="tag">TBD</span></div>
+        <a class="project-link" href="#">Explore Idea →</a>
       </div>
-      <div class="skill-card">
-        <div class="skill-icon">🎨</div>
-        <div class="skill-name">HTML & CSS</div>
-        <div class="skill-level">Comfortable</div>
-        <div class="skill-bar"><div class="skill-bar-fill" style="width: 75%"></div></div>
+    </div>
+  </div>
+
+  <!-- GAMES -->
+  <div id="games" class="panel">
+    <div class="ludo-wrapper">
+      <div style="flex-shrink:0;position:relative">
+        <div class="ludo-frame">
+          <canvas id="ludo-canvas" width="480" height="480"></canvas>
+          <div class="win-overlay" id="win-overlay">
+            <div class="win-crown">♛</div>
+            <div class="win-text" id="win-text">Red</div>
+            <div class="win-sub">claims the throne</div>
+            <button class="btn-ludo btn-ludo-gold" style="margin-top:20px;flex:none;padding:13px 28px" onclick="initLudo()">↺ Play Again</button>
+          </div>
+        </div>
       </div>
-      <div class="skill-card">
-        <div class="skill-icon">🖌️</div>
-        <div class="skill-name">UI Design</div>
-        <div class="skill-level">Learning</div>
-        <div class
+
+      <div class="ludo-panel">
+        <div class="ludo-title-area">
+          <div class="ludo-eyebrow">Royal Edition · 4 Players</div>
+          <div class="ludo-title">Ludo</div>
+          <div class="ludo-subtitle">A game of chance, strategy & glory</div>
+        </div>
+
+        <div class="turn-card">
+          <div class="turn-label">Current Turn</div>
+          <div class="turn-name" id="turn-name" style="color:#e74c3c">Red</div>
+          <div class="turn-instruction" id="turn-instruction">Roll the dice to begin</div>
+        </div>
+
+        <div class="dice-area">
+          <button class="dice-btn" id="dice-btn" onclick="rollDice()">⚄</button>
+          <div>
+            <div class="dice-value-label">Rolled</div>
+            <div class="dice-value" id="dice-display">—</div>
+            <div class="dice-msg" id="dice-msg">Awaiting your roll</div>
+          </div>
+        </div>
+
+        <div class="players-grid">
+          <div class="player-score-card" id="score-0">
+            <div class="player-score-name"><span class="player-color-dot" style="background:#e74c3c;box-shadow:0 0 6px #e74c3c"></span>Red</div>
+            <div class="player-score-num" id="home-0">0</div>
+            <div class="player-score-label">pieces home</div>
+          </div>
+          <div class="player-score-card" id="score-1">
+            <div class="player-score-name"><span class="player-color-dot" style="background:#2980b9;box-shadow:0 0 6px #2980b9"></span>Blue</div>
+            <div class="player-score-num" id="home-1">0</div>
+            <div class="player-score-label">pieces home</div>
+          </div>
+          <div class="player-score-card" id="score-2">
+            <div class="player-score-name"><span class="player-color-dot" style="background:#27ae60;box-shadow:0 0 6px #27ae60"></span>Green</div>
+            <div class="player-score-num" id="home-2">0</div>
+            <div class="player-score-label">pieces home</div>
+          </div>
+          <div class="player-score-card" id="score-3">
+            <div class="player-score-name"><span class="player-color-dot" style="background:#d4a843;box-shadow:0 0 6px #d4a843"></span>Gold</div>
+            <div class="player-score-num" id="home-3">0</div>
+            <div class="player-score-label">pieces home</div>
+          </div>
+        </div>
+
+        <div class="game-log" id="game-log"></div>
+
+        <div class="game-controls">
+          <button class="btn-ludo btn-ludo-gold" onclick="initLudo()">↺ New Game</button>
+          <button class="btn-ludo" onclick="autoTurn()">▶ Auto Move</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="contact" class="panel">
+    <div class="section-tag">Say Hello</div>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:8px;">I'm always open to new opportunities, collaborations, or just a good conversation.</p>
+        <a class="contact-item" href="mailto:tamilandax@gmail.com"><div class="contact-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-value">tamilandax@gmail.com</div></div></a>
+        <a class="contact-item" href="https://instagram.com/pari7.sync" target="_blank"><div class="contact-icon">📸</div><div><div class="contact-label">Instagram</div><div class="contact-value">@pari7.sync</div></div></a>
+        <a class="contact-item" href="https://github.com/TAMILANDA7692" target="_blank"><div class="contact-icon">🐙</div><div><div class="contact-label">GitHub</div><div class="contact-value">TAMILANDA7692</div></div></a>
+      </div>
+      <div class="contact-form">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:24px;">Send a Message</h3>
+        <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" type="text" id="msg-name" placeholder="What's your name?"></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="msg-body" placeholder="What would you like to say?"></textarea></div>
+        <button class="btn btn-primary" style="width:100%" onclick="sendMsg()">Send Message →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---- PORTFOLIO ---- */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav li').forEach(l=>l.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector(`nav li[data-panel="${id}"]`).classList.add('active');
+  if(id==='skills') animateSkills();
+  if(id==='home') animateCounters();
+}
+const pCanvas=document.getElementById('particles'),pCtx=pCanvas.getContext('2d');
+let pts=[],PW,PH;
+function pResize(){PW=pCanvas.width=window.innerWidth;PH=pCanvas.height=window.innerHeight}
+pResize(); window.addEventListener('resize',pResize);
+class Pt{constructor(){this.reset()}reset(){this.x=Math.random()*PW;this.y=Math.random()*PH;this.s=Math.random()*1.5+0.3;this.vx=(Math.random()-.5)*.3;this.vy=(Math.random()-.5)*.3;this.a=Math.random()*.5+.1;this.c=Math.random()>.7?'#7c3aff':'#00f5c4'}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>PW||this.y<0||this.y>PH)this.reset()}draw(){pCtx.save();pCtx.globalAlpha=this.a;pCtx.fillStyle=this.c;pCtx.beginPath();pCtx.arc(this.x,this.y,this.s,0,Math.PI*2);pCtx.fill();pCtx.restore()}}
+for(let i=0;i<100;i++)pts.push(new Pt());
+let mx=-999,my=-999;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function pAnim(){pCtx.clearRect(0,0,PW,PH);pts.forEach(p=>{p.update();p.draw();const dx=mx-p.x,dy=my-p.y,d=Math.sqrt(dx*dx+dy*dy);if(d<90){pCtx.save();pCtx.globalAlpha=(1-d/90)*.1;pCtx.strokeStyle='#00f5c4';pCtx.lineWidth=.5;pCtx.beginPath();pCtx.moveTo(p.x,p.y);pCtx.lineTo(mx,my);pCtx.stroke();pCtx.restore()}});requestAnimationFrame(pAnim)})();
+function animateCounters(){ac('count1',3,1200);ac('count2',6,1400);ac('count3',247,2000)}
+function ac(id,t,dur){const el=document.getElementById(id);let s=0;const step=t/(dur/16);const timer=setInterval(()=>{s+=step;if(s>=t){el.textContent=t+(id==='count3'?'+':'');clearInterval(timer)}else el.textContent=Math.floor(s)+(id==='count3'?'+':'')},16)}
+function animateSkills(){setTimeout(()=>document.querySelectorAll('.skill-card').forEach((c,i)=>setTimeout(()=>c.classList.add('visible'),i*100)),100)}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+function sendMsg(){const n=document.getElementById('msg-name').value.trim(),b=document.getElementById('msg-body').value.trim();if(!n||!b){showToast('⚠️ Please fill in all fields');return}window.location.href=`mailto:tamilandax@gmail.com?subject=Message from ${encodeURIComponent(n)}&body=${encodeURIComponent(b)}`;showToast('✓ Opening your email client...');document.getElementById('msg-name').value='';document.getElementById('msg-body').value=''}
+animateCounters();
+
+/* ============================================================
+   LUDO ENGINE
+   15×15 grid, CELL = 32px
+   Track: 52 cells, each player offset by 13 steps
+============================================================ */
+const LC=document.getElementById('ludo-canvas');
+const LX=LC.getContext('2d');
+const SZ=480, CELL=SZ/15;
+
+const PLAYERS=[
+  {name:'Red',   color:'#c0392b',light:'#e74c3c',dark:'#7b241c',startIdx:0,  logCls:'log-red'   },
+  {name:'Blue',  color:'#1a4a8a',light:'#2980b9',dark:'#154360',startIdx:13, logCls:'log-blue'  },
+  {name:'Green', color:'#1a6a3a',light:'#27ae60',dark:'#145a32',startIdx:26, logCls:'log-green' },
+  {name:'Gold',  color:'#7a5c10',light:'#d4a843',dark:'#4a3508',startIdx:39, logCls:'log-yellow'},
+];
+
+// 52-step shared track (col, row) — standard Ludo path
+const TRACK=[
+  [6,13],[6,12],[6,11],[6,10],[6,9],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8],[0,7],[0,6],
+  [1,6],[2,6],[3,6],[4,6],[5,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[7,0],[8,0],
+  [8,1],[8,2],[8,3],[8,4],[8,5],[9,6],[10,6],[11,6],[12,6],[13,6],[14,6],[14,7],[14,8],
+  [13,8],[12,8],[11,8],[10,8],[9,8],[8,9],[8,10],[8,11],[8,12],[8,13],[8,14],[7,14]
+];
+
+// Home column (steps 52-56, index 0-4): leading toward center
+const HOME_COLS=[
+  [[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]],
+  [[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],
+  [[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],
+  [[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]],
+];
+
+// Yard spawn positions per player
+const YARDS=[
+  [[1,1],[3,1],[1,3],[3,3]],
+  [[11,1],[13,1],[11,3],[13,3]],
+  [[11,11],[13,11],[11,13],[13,13]],
+  [[1,11],[3,11],[1,13],[3,13]],
+];
+
+// Safe cells (star squares on standard board)
+const SAFE_SET=new Set([[6,2],[2,6],[2,8],[6,12],[8,2],[12,6],[12,8],[8,12]].map(c=>c.join(',')));
+
+let G={};
+
+function initLudo(){
+  document.getElementById('win-overlay').classList.remove('show');
+  G={turn:0,rolled:false,dice:0,movable:[],waiting:false,
+    pieces:PLAYERS.flatMap((pl,pi)=>YARDS[pi].map((yp,id)=>({pi,id,pos:-1,fin:false,yard:yp})))};
+  document.getElementById('dice-btn').disabled=false;
+  document.getElementById('dice-btn').textContent='⚄';
+  document.getElementById('dice-display').textContent='—';
+  document.getElementById('dice-msg').textContent='Awaiting your roll';
+  document.getElementById('game-log').innerHTML='';
+  addLog('♛','log-gold','Royal Ludo begins — Red rolls first');
+  updateUI(); drawBoard();
+}
+
+function addLog(icon,cls,msg){
+  const log=document.getElementById('game-log');
+  const el=document.createElement('div'); el.className='log-entry';
+  el.innerHTML=`${icon} <span class="${cls}">${msg}</span>`;
+  log.appendChild(el); log.scrollTop=log.scrollHeight;
+}
+
+function updateUI(){
+  const pl=PLAYERS[G.turn];
+  document.getElementById('turn-name').textContent=pl.name;
+  document.getElementById('turn-name').style.color=pl.light;
+  document.getElementById('turn-instruction').textContent=
+    G.rolled?(G.movable.length?'Tap a glowing piece to move':'No valid moves'):'Roll the dice';
+  document.getElementById('dice-btn').disabled=G.rolled;
+  for(let i=0;i<4;i++){
+    document.getElementById(`home-${i}`).textContent=G.pieces.filter(p=>p.pi===i&&p.fin).length;
+    const card=document.getElementById(`score-${i}`);
+    card.style.borderColor=i===G.turn?PLAYERS[i].light:'';
+    card.style.boxShadow=i===G.turn?`0 0 14px ${PLAYERS[i].color}55`:'';
+  }
+}
+
+function rollDice(){
+  if(G.rolled)return;
+  const btn=document.getElementById('dice-btn');
+  btn.classList.add('rolling');
+  setTimeout(()=>btn.classList.remove('rolling'),450);
+  const v=Math.floor(Math.random()*6)+1;
+  G.dice=v; G.rolled=true;
+  const faces=['⚀','⚁','⚂','⚃','⚄','⚅'];
+  btn.textContent=faces[v-1];
+  document.getElementById('dice-display').textContent=v;
+  const pl=PLAYERS[G.turn];
+  addLog(faces[v-1],pl.logCls,`${pl.name} rolled a ${v}`);
+  G.movable=getMovable(G.turn,v);
+  if(!G.movable.length){
+    document.getElementById('dice-msg').textContent='No valid moves';
+    addLog('—',pl.logCls,`${pl.name} has no moves`);
+    setTimeout(nextTurn,900);
+  } else if(G.movable.length===1){
+    document.getElementById('dice-msg').textContent='Moving piece…';
+    setTimeout(()=>move(G.movable[0]),600);
+  } else {
+    document.getElementById('dice-msg').textContent='Tap a piece';
+    G.waiting=true;
+  }
+  updateUI(); drawBoard();
+}
+
+function getMovable(pi,roll){
+  return G.pieces.filter(p=>p.pi===pi&&!p.fin&&(
+    (p.pos===-1&&roll===6)||(p.pos>=0&&p.pos+roll<=56)
+  ));
+}
+
+function move(pc){
+  G.waiting=false; G.movable=[];
+  const pl=PLAYERS[pc.pi];
+  if(pc.pos===-1){
+    pc.pos=0;
+    addLog('→',pl.logCls,`${pl.name} enters the board!`);
+  } else {
+    pc.pos+=G.dice;
+    if(pc.pos<52){
+      // Check capture
+      const trackCell=TRACK[(pc.pos+PLAYERS[pc.pi].startIdx)%52];
+      const key=trackCell.join(',');
+      if(!SAFE_SET.has(key)){
+        G.pieces.filter(op=>op.pi!==pc.pi&&!op.fin&&op.pos>=0&&op.pos<52&&
+          TRACK[(op.pos+PLAYERS[op.pi].startIdx)%52].join(',')===key
+        ).forEach(op=>{
+          op.pos=-1;
+          addLog('✕',PLAYERS[op.pi].logCls,`${PLAYERS[op.pi].name} piece sent home!`);
+        });
+      }
+    }
+    if(pc.pos>=57){pc.pos=57;pc.fin=true;addLog('★',pl.logCls,`${pl.name} piece reaches the throne!`)}
+    else addLog('→',pl.logCls,`${pl.name} advances to step ${pc.pos}`);
+  }
+  drawBoard(); updateUI();
+  if(pc.fin&&checkWin(pc.pi))return;
+  if(G.dice===6&&!pc.fin){
+    addLog('✦',pl.logCls,`${pl.name} rolled 6 — bonus roll!`);
+    G.rolled=false;
+    document.getElementById('dice-btn').disabled=false;
+    document.getElementById('dice-btn').textContent='⚄';
+    document.getElementById('dice-display').textContent='—';
+    document.getElementById('dice-msg').textContent='Bonus roll!';
+    updateUI();
+  } else {
+    setTimeout(nextTurn,400);
+  }
+}
+
+function checkWin(pi){
+  if(G.pieces.filter(p=>p.pi===pi&&p.fin).length===4){
+    const pl=PLAYERS[pi];
+    document.getElementById('win-text').textContent=pl.name;
+    document.getElementById('win-text').style.color=pl.light;
+    document.getElementById('win-overlay').classList.add('show');
+    addLog('♛',pl.logCls,`${pl.name} wins the Royal Ludo!`);
+    return true;
+  }return false;
+}
+
+function nextTurn(){
+  G.turn=(G.turn+1)%4; G.rolled=false; G.dice=0; G.movable=[]; G.waiting=false;
+  document.getElementById('dice-btn').disabled=false;
+  document.getElementById('dice-btn').textContent='⚄';
+  document.getElementById('dice-display').textContent='—';
+  document.getElementById('dice-msg').textContent='Awaiting your roll';
+  updateUI(); drawBoard();
+}
+
+function autoTurn(){if(!G.rolled)rollDice();else if(G.movable.length)move(G.movable[0])}
+
+LC.addEventListener('click',function(e){
+  if(!G.waiting||!G.movable.length)return;
+  const r=LC.getBoundingClientRect();
+  const sx=LC.width/r.width, sy=LC.height/r.height;
+  const cx=(e.clientX-r.left)*sx, cy=(e.clientY-r.top)*sy;
+  for(const pc of G.movable){
+    const {px,py}=pieceXY(pc);
+    if(Math.hypot(cx-px,cy-py)<CELL*.85){G.waiting=false;move(pc);return}
+  }
+});
+
+function pieceXY(pc){
+  if(pc.fin) return{px:SZ/2,py:SZ/2};
+  if(pc.pos===-1){const[c,r]=pc.yard;return{px:c*CELL+CELL/2,py:r*CELL+CELL/2}}
+  if(pc.pos>=52){const[c,r]=HOME_COLS[pc.pi][pc.pos-52]||[7,7];return{px:c*CELL+CELL/2,py:r*CELL+CELL/2}}
+  const[c,r]=TRACK[(pc.pos+PLAYERS[pc.pi].startIdx)%52];
+  return{px:c*CELL+CELL/2,py:r*CELL+CELL/2}
+}
+
+/* ---- DRAW ---- */
