@@ -2,69 +2,243 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>My Portfolio</title>
-<link rel="stylesheet" href="style.css">
-</head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parivallal — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent: #00f5c4;
+    --accent2: #7c3aff;
+    --accent3: #ff3a6e;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --glow: 0 0 20px rgba(0,245,196,0.3);
+    --gold: #d4a843;
+    --gold-light: #f0cc70;
+    --gold-dim: #8a6a1a;
+    --ludo-bg: #0d0c0a;
+    --ludo-surface: #1a1710;
+    --ludo-border: #2e2a1e;
+  }
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:0.4}
+  #particles{position:fixed;inset:0;z-index:0;pointer-events:none}
 
+  .sidebar{position:fixed;left:0;top:0;width:220px;height:100vh;background:rgba(18,18,26,0.85);backdrop-filter:blur(20px);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:40px 28px;z-index:100}
+  .logo{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:60px;display:flex;align-items:center;gap:8px}
+  .logo-dot{width:8px;height:8px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+  nav ul{list-style:none;display:flex;flex-direction:column;gap:4px}
+  nav ul li{font-size:13px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);padding:12px 16px;border-radius:8px;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+  nav ul li::before{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--accent);transform:scaleY(0);transition:transform 0.25s;border-radius:0 2px 2px 0}
+  nav ul li:hover,nav ul li.active{color:var(--text);background:rgba(0,245,196,0.06)}
+  nav ul li:hover::before,nav ul li.active::before{transform:scaleY(1)}
+  nav ul li .nav-icon{font-size:16px}
+  .sidebar-footer{margin-top:auto;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.05em}
+
+  .main{margin-left:220px;min-height:100vh;position:relative;z-index:2}
+  .panel{display:none;min-height:100vh;padding:80px 70px;animation:fadeIn 0.5s ease}
+  .panel.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+  #home{display:flex;flex-direction:column;justify-content:center;padding-top:120px}
+  .home-tag{font-family:'Space Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+  .home-tag::before{content:'';width:40px;height:1px;background:var(--accent)}
+  h1.hero-name{font-size:clamp(52px,8vw,96px);font-weight:800;line-height:1.0;letter-spacing:-0.03em;margin-bottom:24px}
+  h1.hero-name span{display:block;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero-sub{font-size:18px;color:var(--muted);margin-bottom:48px;max-width:480px;line-height:1.7}
+  .hero-sub strong{color:var(--text)}
+  .hero-buttons{display:flex;gap:16px;flex-wrap:wrap}
+  .btn{padding:14px 32px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;transition:all 0.25s}
+  .btn-primary{background:var(--accent);color:#0a0a0f}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:var(--glow)}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
+  .hero-stats{display:flex;gap:48px;margin-top:80px;padding-top:40px;border-top:1px solid var(--border)}
+  .stat-num{font-size:36px;font-weight:800;color:var(--accent);font-family:'Space Mono',monospace}
+  .stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+
+  .section-tag{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:16px}
+  .section-title{font-size:clamp(32px,5vw,52px);font-weight:800;letter-spacing:-0.02em;margin-bottom:48px;line-height:1.1}
+
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+  .about-text p{color:var(--muted);line-height:1.9;font-size:16px;margin-bottom:20px}
+  .about-text p strong{color:var(--text)}
+  .about-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;position:relative;overflow:hidden}
+  .about-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .about-card h3{font-size:14px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:20px}
+  .info-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:14px}
+  .info-item:last-child{border-bottom:none}
+  .info-label{color:var(--muted)}
+  .info-value{color:var(--text);font-weight:600}
+
+  .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+  .skill-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all 0.3s;cursor:default;position:relative;overflow:hidden}
+  .skill-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,245,196,0.04),transparent);opacity:0;transition:opacity 0.3s}
+  .skill-card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,245,196,0.1)}
+  .skill-card:hover::after{opacity:1}
+  .skill-icon{font-size:28px;margin-bottom:12px}
+  .skill-name{font-size:16px;font-weight:700;margin-bottom:8px}
+  .skill-level{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px}
+  .skill-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+  .skill-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform 1s cubic-bezier(0.4,0,0.2,1)}
+  .skill-card.visible .skill-bar-fill{transform:scaleX(1)}
+
+  .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+  .project-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all 0.3s;position:relative;overflow:hidden;cursor:pointer}
+  .project-card::before{content:'';position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:radial-gradient(circle,rgba(0,245,196,0.06) 0%,transparent 60%);transition:all 0.5s;pointer-events:none}
+  .project-card:hover::before{top:-50%;left:-50%}
+  .project-card:hover{border-color:rgba(0,245,196,0.4);transform:translateY(-6px);box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+  .project-num{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.1em;margin-bottom:20px}
+  .project-title{font-size:20px;font-weight:700;margin-bottom:12px}
+  .project-desc{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px}
+  .project-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+  .tag{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;border-radius:4px;background:rgba(0,245,196,0.08);color:var(--accent);border:1px solid rgba(0,245,196,0.2);letter-spacing:0.05em}
+  .project-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent);text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:gap 0.2s}
+  .project-link:hover{gap:10px}
+  .wip-badge{display:inline-block;font-family:'Space Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(255,58,110,0.1);color:var(--accent3);border:1px solid rgba(255,58,110,0.3);letter-spacing:0.08em;margin-left:8px}
+
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+  .contact-info{display:flex;flex-direction:column;gap:20px}
+  .contact-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;align-items:center;gap:16px;transition:all 0.3s;cursor:pointer;text-decoration:none;color:inherit}
+  .contact-item:hover{border-color:var(--accent);transform:translateX(6px)}
+  .contact-icon{font-size:24px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:rgba(0,245,196,0.08);border-radius:10px;flex-shrink:0}
+  .contact-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+  .contact-value{font-size:15px;font-weight:600}
+  .contact-form{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px;position:relative;overflow:hidden}
+  .contact-form::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+  .form-group{margin-bottom:20px}
+  .form-label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px}
+  .form-input,.form-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s}
+  .form-input:focus,.form-textarea:focus{border-color:var(--accent)}
+  .form-textarea{resize:vertical;min-height:100px}
+
+  .toast{position:fixed;bottom:32px;right:32px;background:var(--surface);border:1px solid var(--accent);border-radius:10px;padding:16px 24px;font-size:14px;color:var(--accent);z-index:9999;transform:translateY(100px);opacity:0;transition:all 0.4s cubic-bezier(0.4,0,0.2,1);box-shadow:var(--glow)}
+  .toast.show{transform:translateY(0);opacity:1}
+  ::-webkit-scrollbar{width:4px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+  /* ===== LUDO ===== */
+  #games{padding:60px 70px;background:radial-gradient(ellipse at 20% 20%,rgba(212,168,67,0.04) 0%,transparent 60%)}
+  .ludo-wrapper{display:flex;gap:40px;align-items:flex-start;flex-wrap:wrap}
+  .ludo-frame{background:linear-gradient(145deg,#2a2410,#1a1710,#2a2410);border:2px solid var(--gold-dim);border-radius:20px;padding:20px;box-shadow:0 0 0 1px rgba(212,168,67,0.1),0 24px 80px rgba(0,0,0,0.8),inset 0 1px 0 rgba(212,168,67,0.2),0 0 60px rgba(212,168,67,0.05);position:relative}
+  .ludo-frame::before{content:'';position:absolute;inset:6px;border:1px solid rgba(212,168,67,0.15);border-radius:14px;pointer-events:none}
+  #ludo-canvas{display:block;border-radius:10px}
+
+  .ludo-panel{flex:1;min-width:260px;display:flex;flex-direction:column;gap:18px}
+  .ludo-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.3em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:6px}
+  .ludo-title{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:700;color:var(--gold-light);line-height:1;letter-spacing:0.02em;text-shadow:0 0 40px rgba(212,168,67,0.3)}
+  .ludo-subtitle{font-size:13px;color:var(--muted);margin-top:6px}
+  .ludo-title-area{border-bottom:1px solid var(--ludo-border);padding-bottom:18px}
+
+  .turn-card{background:var(--ludo-surface);border:1px solid var(--ludo-border);border-radius:12px;padding:18px 22px;position:relative;overflow:hidden}
+  .turn-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold-dim),var(--gold-light),var(--gold-dim))}
+  .turn-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:6px}
+  .turn-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;letter-spacing:0.05em}
+  .turn-instruction{font-size:12px;color:var(--muted);margin-top:4px}
+
+  .dice-area{display:flex;align-items:center;gap:18px}
+  .dice-btn{width:72px;height:72px;background:linear-gradient(145deg,#2a2410,#1a1710);border:1px solid var(--gold-dim);border-radius:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:34px;transition:all 0.2s;box-shadow:0 4px 16px rgba(0,0,0,0.5),inset 0 1px 0 rgba(212,168,67,0.15);color:var(--gold-light);font-family:'Space Mono',monospace;font-weight:700;position:relative;overflow:hidden}
+  .dice-btn::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(212,168,67,0.1),transparent 60%)}
+  .dice-btn:hover:not(:disabled){border-color:var(--gold);box-shadow:0 4px 24px rgba(212,168,67,0.2),inset 0 1px 0 rgba(212,168,67,0.3);transform:translateY(-2px)}
+  .dice-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none}
+  .dice-btn.rolling{animation:diceRoll 0.45s ease}
+  @keyframes diceRoll{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-15deg) scale(0.95)}50%{transform:rotate(10deg) scale(1.05)}75%{transform:rotate(-5deg) scale(0.98)}100%{transform:rotate(0) scale(1)}}
+  .dice-value-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:2px}
+  .dice-value{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;color:var(--gold-light);line-height:1;text-shadow:0 0 20px rgba(212,168,67,0.4)}
+  .dice-msg{font-size:11px;color:var(--muted);margin-top:2px}
+
+  .players-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .player-score-card{background:var(--ludo-surface);border:1px solid var(--ludo-border);border-radius:10px;padding:12px 14px;transition:all 0.3s}
+  .player-color-dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
+  .player-score-name{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+  .player-score-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--gold-light);line-height:1}
+  .player-score-label{font-size:9px;color:var(--muted);letter-spacing:0.05em}
+
+  .game-log{background:var(--ludo-surface);border:1px solid var(--ludo-border);border-radius:12px;padding:14px;height:120px;overflow-y:auto}
+  .game-log::-webkit-scrollbar{width:3px}
+  .game-log::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
+  .log-entry{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);padding:3px 0;border-bottom:1px solid rgba(46,42,30,0.5);letter-spacing:0.02em;line-height:1.5}
+  .log-entry:last-child{border-bottom:none}
+  .log-gold{color:var(--gold-light)}
+  .log-red{color:#e74c3c}
+  .log-blue{color:#2980b9}
+  .log-green{color:#27ae60}
+  .log-yellow{color:var(--gold)}
+
+  .game-controls{display:flex;gap:8px}
+  .btn-ludo{flex:1;padding:11px 16px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;border:1px solid var(--ludo-border);border-radius:8px;background:var(--ludo-surface);color:var(--muted);cursor:pointer;transition:all 0.2s}
+  .btn-ludo:hover{border-color:var(--gold-dim);color:var(--gold-light)}
+  .btn-ludo-gold{border-color:var(--gold-dim);background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(212,168,67,0.04));color:var(--gold-light)}
+  .btn-ludo-gold:hover{box-shadow:0 0 20px rgba(212,168,67,0.15);border-color:var(--gold)}
+
+  .win-overlay{display:none;position:absolute;inset:0;background:rgba(13,12,10,0.96);border-radius:10px;align-items:center;justify-content:center;flex-direction:column;text-align:center;z-index:50;backdrop-filter:blur(6px)}
+  .win-overlay.show{display:flex;animation:fadeIn 0.5s ease}
+  .win-crown{font-size:64px;margin-bottom:14px;animation:floatY 3s ease-in-out infinite}
+  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .win-text{font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700;color:var(--gold-light);text-shadow:0 0 40px rgba(212,168,67,0.5);margin-bottom:6px}
+  .win-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.25em;color:var(--gold-dim);text-transform:uppercase}
+
+  @media(max-width:768px){
+    .sidebar{width:100%;height:auto;flex-direction:row;flex-wrap:wrap;padding:16px 20px;border-right:none;border-bottom:1px solid var(--border);position:sticky;top:0}
+    .logo{margin-bottom:0;margin-right:24px}
+    nav ul{flex-direction:row;gap:4px}
+    nav ul li{padding:8px 12px;font-size:11px}
+    nav ul li::before{display:none}
+    .main{margin-left:0}
+    .panel,#games{padding:36px 20px}
+    .about-grid,.contact-grid{grid-template-columns:1fr}
+    .hero-stats{gap:20px}
+    .sidebar-footer{display:none}
+    .ludo-wrapper{flex-direction:column}
+  }
+</style>
+</head>
 <body>
 
-<!-- 🌌 Particles Background -->
 <canvas id="particles"></canvas>
+<div class="toast" id="toast"></div>
 
-<!-- Sidebar -->
 <div class="sidebar">
-  <h2>MyPort</h2>
-  <ul>
-    <li onclick="showPanel('home')">Home</li>
-    <li onclick="showPanel('about')">About</li>
-    <li onclick="showPanel('skills')">Skills</li>
-    <li onclick="showPanel('projects')">Projects</li>
-    <li onclick="showPanel('contact')">Contact</li>
-  </ul>
+  <div class="logo"><div class="logo-dot"></div>PARI.DEV</div>
+  <nav><ul>
+    <li class="active" data-panel="home" onclick="showPanel('home')"><span class="nav-icon">⌂</span> Home</li>
+    <li data-panel="about" onclick="showPanel('about')"><span class="nav-icon">◎</span> About</li>
+    <li data-panel="skills" onclick="showPanel('skills')"><span class="nav-icon">◈</span> Skills</li>
+    <li data-panel="projects" onclick="showPanel('projects')"><span class="nav-icon">◻</span> Projects</li>
+    <li data-panel="games" onclick="showPanel('games')"><span class="nav-icon">♟</span> Play</li>
+    <li data-panel="contact" onclick="showPanel('contact')"><span class="nav-icon">◉</span> Contact</li>
+  </ul></nav>
+  <div class="sidebar-footer">&copy; 2026 Parivallal<br><span style="color:var(--accent)">Available for work</span></div>
 </div>
 
-<!-- Main -->
 <div class="main">
 
-  <!-- Home -->
   <div id="home" class="panel active">
-    <h1>Hi, I'm Parivallal 👋</h1>
-    <p> Developer | Student</p>
-    <button onclick="showPanel('projects')">View Work</button>
+    <div class="home-tag">Available for opportunities</div>
+    <h1 class="hero-name">Hi, I'm<br><span>Parivallal</span></h1>
+    <p class="hero-sub"><strong>Developer & Designer</strong> crafting digital experiences with code.<br>Currently studying and building things I find interesting.</p>
+    <div class="hero-buttons">
+      <button class="btn btn-primary" onclick="showPanel('projects')">View My Work →</button>
+      <button class="btn btn-outline" onclick="showPanel('contact')">Get In Touch</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="count1">0</div><div class="stat-label">Projects Built</div></div>
+      <div class="stat"><div class="stat-num" id="count2">0</div><div class="stat-label">Technologies</div></div>
+      <div class="stat"><div class="stat-num" id="count3">0</div><div class="stat-label">Cups of Coffee</div></div>
+    </div>
   </div>
 
-  <!-- About -->
   <div id="about" class="panel">
-    <h2>About Me</h2>
-    <p>I am a student learning web development and building UI designs.</p>
-  </div>
-
-  <!-- Skills -->
-  <div id="skills" class="panel">
-    <h2>Skills</h2>
-    <span>Python</span>
-    <span>C++</span>
-    <span>JavaScript</span>
-  </div>
-
-  <!-- Projects -->
-  <div id="projects" class="panel">
-    <h2>Projects - Under dev..ment</h2>
-    <p>Portfolio Website</p>
-    <button onclick="alert('Project Opening...')">Open</button>
-  </div>
-
-  <!-- Contact -->
-  <div id="contact" class="panel">
-    <h2>Contact</h2>
-    <p>Email: tamilandax@gmail.com</p>
-    <p>Insta: pari7.sync</p>
-  </div>
-
-</div>
-
-<!-- Script -->
-<script src="script.js"></script>
-
-</body>
-</html>
+    <div class="section-tag">Who am I</div>
+    <h2 class="section-title">About Me</h2>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm <strong>Parivallal</strong>, a passionate developer and student who loves building things for the web. I'm always experim
